@@ -37,7 +37,10 @@ public class SendSocket {
         String response= input.readLine();
         if ( response.isEmpty() )
             System.out.println( "(server did not reply with a message)" );
-        else {
+        else if ( response.equalsIgnoreCase("Death") ) {
+            System.out.println("GAME OVER");
+            close();
+        } else {
             System.out.println( response );
         }
     }
