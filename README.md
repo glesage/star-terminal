@@ -1,0 +1,4 @@
+# star-terminal
+===============
+
+Client app
