@@ -1,6 +1,5 @@
 package Main.Network;
 
-import java.io.*;
 import java.net.Socket;
 import java.net.InetAddress;
 import java.io.PrintWriter;
@@ -9,47 +8,46 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 
 public class SendSocket {
-        private int port; 
-        
-        String line;
-        InetAddress loopback;
-        Socket client_socket;
-        PrintWriter output;
-        BufferedReader input;
+    private int port;
 
-        public SendSocket( int port ) throws IOException {
-            this.port = port;
+    String line;
+    InetAddress loopback;
+    Socket client_socket;
+    PrintWriter output;
+    BufferedReader input;
 
-            loopback= InetAddress.getLoopbackAddress();
+    public SendSocket( int port ) throws IOException {
+        this.port = port;
 
-            // try to connect to the server
-            client_socket= new Socket( loopback, port );
+        loopback= InetAddress.getLoopbackAddress();
 
-            // grab the output and input streams
-            output= new PrintWriter( client_socket.getOutputStream(), true );
-            input= new BufferedReader( new InputStreamReader( client_socket.getInputStream() ) );
+        // try to connect to the server
+        client_socket= new Socket( loopback, port );
+
+        // grab the output and input streams
+        output= new PrintWriter( client_socket.getOutputStream(), true );
+        input= new BufferedReader( new InputStreamReader( client_socket.getInputStream() ) );
+    }
+
+    public void communicate(String move) throws IOException {
+        // send a message
+        output.println(move);
+
+        // receive the game map
+        String response= input.readLine();
+        if ( response.isEmpty() )
+            System.out.println( "(server did not reply with a message)" );
+        else {
+            System.out.println( response );
         }
+    }
 
-        void communicate(String move) throws IOException {
-            // send a message
-            output.println(move);
-            
-            // receive the game map
-            String response= input.readLine();
-            if ( response.isEmpty() )
-                System.out.println( "(server did not reply with a message)" );
-            else {
-                System.out.println( response );
-            }       
+    public void close() {
+        try {
+            client_socket.close();
         }
-    
-        void close() {
-            try {
-                client_socket.close();
-            }
-            catch( Exception e ) {
-                // ignore
-            }
+        catch( Exception e ) {
+            // ignore
         }
     }
 }
