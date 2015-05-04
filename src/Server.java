@@ -1,4 +1,7 @@
 import Main.Network.ListenSocket;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.io.*;
 
 public class Server {
     public static void main(String[] args) {
@@ -6,7 +9,6 @@ public class Server {
     }
 
     private static void startServer(int port) {
-        System.out.print("Started server on port: " + String.valueOf(port));
         ListenSocket listen = new ListenSocket(port);
     }
 }
