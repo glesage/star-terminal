@@ -24,9 +24,9 @@ public class UserThread implements Runnable{
             BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             OutputStream output = clientSocket.getOutputStream();
 
-            String clientMsg = "";
             this.user = new User("Geoff", 'G');
 
+            String clientMsg = null;
             while ((clientMsg = reader.readLine()) != null) {
 
                 System.out.println(user.name + " sent " + clientMsg);

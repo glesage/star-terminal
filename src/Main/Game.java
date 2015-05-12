@@ -22,6 +22,7 @@ public class Game {
 
     public void joinGame(User user) throws UserAlreadyInGameException {
         if (users.contains(user)) throw new UserAlreadyInGameException();
+        user.pos = (int)(this.mapWidth/2);
         users.add(user);
     }
 
@@ -30,15 +31,12 @@ public class Game {
 
         switch (mvmt) {
             case "LEFT":
-                if (user.pos <= 1) user.pos = 0;
+                if (user.pos <= 1) user.pos = 1;
                 else user.pos--;
                 break;
             case "RIGHT":
                 if (user.pos >= this.mapWidth-1) user.pos = this.mapWidth-1;
                 else user.pos++;
-                break;
-            case "START":
-                user.pos = (int)(this.mapWidth/2);
                 break;
             default:
                 System.out.println("User sent invalid mvmt: " + mvmt);
@@ -48,6 +46,7 @@ public class Game {
     }
 
     private String rebuildMap() {
+
         // Make sure the map has the right number of lines
         while (this.map.size() < mapHeight) this.map.add(this.createNextLine());
 
@@ -79,7 +78,7 @@ public class Game {
         for (int i = 0; i < this.mapWidth; i++){
             char original = originalLine.charAt(i);
             char updated = newLine.charAt(i);
-            if (original == 'O' && updated != ' ')
+            if (original == 'O' && updated != 'O' && updated != ' ')
             {
                 String gameOver = "GAME OVER";
                 while (gameOver.length() < this.mapWidth) {
