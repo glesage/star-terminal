@@ -39,7 +39,8 @@ public class SendSocket {
             input = new BufferedReader(new InputStreamReader(client_socket.getInputStream()));
 
             // TODO - get move from keyboard
-            this.communicate("move");
+            this.communicate("START");
+            this.communicate("LEFT");
         }
         catch(IOException e) {
             System.out.println("Couldn't start client.");
@@ -76,7 +77,7 @@ public class SendSocket {
             client_socket.close();
         }
         catch( Exception e ) {
-            // ignore
+            System.out.println("Had an error closing the socket.");
         }
     }
 }
