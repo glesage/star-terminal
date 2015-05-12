@@ -9,6 +9,7 @@ import java.io.IOException;
 
 public class SendSocket {
     private int port;
+    private String host;
 
     String line;
     InetAddress loopback;
@@ -16,32 +17,57 @@ public class SendSocket {
     PrintWriter output;
     BufferedReader input;
 
-    public SendSocket( int port ) throws IOException {
+    public SendSocket(String host, int port) {
         this.port = port;
+        this.host = host;
 
-        loopback= InetAddress.getLoopbackAddress();
-
-        // try to connect to the server
-        client_socket= new Socket( loopback, port );
-
-        // grab the output and input streams
-        output= new PrintWriter( client_socket.getOutputStream(), true );
-        input= new BufferedReader( new InputStreamReader( client_socket.getInputStream() ) );
+        this.connect();
     }
 
-    public void communicate(String move) throws IOException {
-        // send a message
-        output.println(move);
+    private void connect() {
+        try {
+            if (host.isEmpty())
+                loopback = InetAddress.getLoopbackAddress();
+            else
+                loopback = InetAddress.getByName(host);
 
-        // receive the game map
-        String response= input.readLine();
-        if ( response.isEmpty() )
-            System.out.println( "(server did not reply with a message)" );
-        else if ( response.equalsIgnoreCase("Death") ) {
-            System.out.println("GAME OVER");
-            close();
-        } else {
-            System.out.println( response );
+            // try to connect to the server
+            client_socket = new Socket(loopback, port);
+
+            // grab the output and input streams
+            output = new PrintWriter(client_socket.getOutputStream(), true);
+            input = new BufferedReader(new InputStreamReader(client_socket.getInputStream()));
+
+            // TODO - get move from keyboard
+            this.communicate("move");
+        }
+        catch(IOException e) {
+            System.out.println("Couldn't start client.");
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private void communicate(String move) {
+        try {
+            // send a message
+            output.println(move);
+
+            // receive the game map
+            String response = input.readLine();
+            if (response.isEmpty())
+                System.out.println("(server did not reply with a message)");
+            else if (response.equalsIgnoreCase("Death")) {
+                System.out.println("GAME OVER");
+                close();
+            } else {
+                System.out.println(response);
+            }
+        }
+        catch(IOException e) {
+            System.out.println("Error communicating with server.");
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
