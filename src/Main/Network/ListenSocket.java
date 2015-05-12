@@ -16,7 +16,7 @@ public class ListenSocket {
         String line;
 
         try {
-            System.out.print("Starting server listening at localhost:" + String.valueOf(port));
+            System.out.println("Starting server listening at localhost:" + String.valueOf(port));
             ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(5000);
             Socket clientSocket = serverSocket.accept();
