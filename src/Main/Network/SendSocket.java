@@ -40,7 +40,10 @@ public class SendSocket {
 
             // TODO - get move from keyboard
             this.communicate("START");
-            this.communicate("LEFT");
+            this.communicate("LEFT");;
+            this.communicate("RIGHT");;
+            this.communicate("DOWN");
+            close();
         }
         catch(IOException e) {
             System.out.println("Couldn't start client.");
@@ -56,14 +59,8 @@ public class SendSocket {
 
             // receive the game map
             String response = input.readLine();
-            if (response.isEmpty())
-                System.out.println("(server did not reply with a message)");
-            else if (response.equalsIgnoreCase("Death")) {
-                System.out.println("GAME OVER");
-                close();
-            } else {
-                System.out.println(response);
-            }
+            System.out.println(response);
+            if (response.toLowerCase().contains("GAME OVER".toLowerCase())) close();
         }
         catch(IOException e) {
             System.out.println("Error communicating with server.");
