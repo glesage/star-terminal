@@ -55,11 +55,16 @@ public class Game {
         this.map.remove(0);
         this.map.add(this.createNextLine());
 
-        // Update user positions on the first line
-        String updatedFirstLine = this.updateUserPositions(this.map.get(0));
-        this.map.set(0, updatedFirstLine);
+        // Update user positions for the first line
+        String originalFirstLine = this.map.get(0);
+        String updatedFirstLine = this.updateUserPositions(originalFirstLine);
 
         // Check for collisions
+        String death = this.checkForDeath(originalFirstLine, updatedFirstLine);
+        if (death != null) return death;
+
+        // If no death has been found, update the first line
+        this.map.set(0, updatedFirstLine);
 
         // Build a string out of the map List
         String outputMap = "";
@@ -68,6 +73,34 @@ public class Game {
         }
 
         return outputMap;
+    }
+
+    private String checkForDeath(String originalLine, String newLine) {
+        for (int i = 0; i < this.mapWidth; i++){
+            char original = originalLine.charAt(i);
+            char updated = newLine.charAt(i);
+            if (original == 'O' && updated != ' ')
+            {
+                String gameOver = "GAME OVER";
+                while (gameOver.length() < this.mapWidth) {
+                    gameOver = "#" + gameOver + "#";
+                }
+                gameOver = "\n" + gameOver + "\n";
+
+                String whoLost = "";
+                for (User user : this.users) {
+                    if (user.symbol != updated) continue;
+                    whoLost = user.name + "has lost!";
+                }
+                while (whoLost.length() < this.mapWidth) {
+                    whoLost = "#" + whoLost + "#";
+                }
+                whoLost = "\n" + whoLost + "\n";
+
+                return gameOver + whoLost;
+            }
+        }
+        return null;
     }
 
     private String createNextLine() {
