@@ -3,14 +3,18 @@ package Main;
 import Main.Exceptions.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by jeff on 5/11/15.
  */
 public class Game {
-    public volatile List<String> map;
-    public int mapWidth;
+    private static final int mapHeight = 10;
+    Random ran = new Random();
+
     private List<User> users = new ArrayList<User>();
+    public volatile List<String> map = new ArrayList<String>();
+    public int mapWidth;
 
     public Game(int mapWidth) {
         this.mapWidth = mapWidth;
@@ -26,11 +30,11 @@ public class Game {
 
         switch (mvmt) {
             case "LEFT":
-                if (user.pos <= 0) user.pos = 0;
+                if (user.pos <= 1) user.pos = 0;
                 else user.pos--;
                 break;
             case "RIGHT":
-                if (user.pos >= this.mapWidth) user.pos = this.mapWidth;
+                if (user.pos >= this.mapWidth-1) user.pos = this.mapWidth-1;
                 else user.pos++;
                 break;
             case "START":
@@ -40,6 +44,48 @@ public class Game {
                 System.out.println("User sent invalid mvmt: " + mvmt);
         }
 
-        return "test";
+        return this.rebuildMap();
+    }
+
+    private String rebuildMap() {
+        // Make sure the map has the right number of lines
+        while (this.map.size() < mapHeight) this.map.add(this.createNextLine());
+
+        // Shift the map up one line
+        this.map.remove(0);
+        this.map.add(this.createNextLine());
+
+        // Update user positions on the first line
+        String updatedFirstLine = this.updateUserPositions(this.map.get(0));
+        this.map.set(0, updatedFirstLine);
+
+        // Check for collisions
+
+        // Build a string out of the map List
+        String outputMap = "";
+        for (String line : this.map) {
+            outputMap += (line + "\n");
+        }
+
+        return outputMap;
+    }
+
+    private String createNextLine() {
+        String nextLine = "*";
+        while (nextLine.length() < this.mapWidth-1)
+        {
+            if (ran.nextDouble() > 0.7) nextLine += "O";
+            else nextLine += " ";
+        }
+
+        return nextLine + "*";
+    }
+
+    private String updateUserPositions(String line) {
+        StringBuilder updatedLine = new StringBuilder(line);
+        for (User user : this.users) {
+            updatedLine.setCharAt(user.pos, user.symbol);
+        }
+        return updatedLine.toString();
     }
 }
