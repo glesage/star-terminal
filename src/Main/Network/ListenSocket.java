@@ -1,6 +1,9 @@
 package Main.Network;
 
-import java.io.*;
+import Main.Game;
+import Main.UserThreads.UserThread;
+
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -8,7 +11,7 @@ public class ListenSocket {
     private int port;
     private static final int timeout = 10000; //10 seconds, while developing
 
-    public ListenSocket(int port){
+    public ListenSocket(int port, Game game){
         this.port = port;
         String line;
 
@@ -17,11 +20,8 @@ public class ListenSocket {
             ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(5000);
             Socket clientSocket = serverSocket.accept();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-            while((line = reader.readLine()) != null){
-                System.out.println("Wrote line: " + line);
-            }
+            new Thread( new UserThread( clientSocket, game) ).start();
         }
         catch (java.net.SocketTimeoutException e){
             String timeoutMsg;

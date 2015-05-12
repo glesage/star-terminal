@@ -1,14 +1,14 @@
 import Main.Network.ListenSocket;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.io.*;
+
+import Main.Game;
 
 public class Server {
     public static void main(String[] args) {
-        startServer(5555);
+        Game game = new Game(20);
+        startServer(5555, game);
     }
 
-    private static void startServer(int port) {
-        ListenSocket listen = new ListenSocket(port);
+    private static void startServer(int port, Game game) {
+        ListenSocket listen = new ListenSocket(port, game);
     }
 }
