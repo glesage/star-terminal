@@ -5,7 +5,7 @@ public class Client {
 
     public static void main(String[] args) {
 		if(args.length > 1)
-			startClient(args[0], Integer.getInteger(args[0]));
+			startClient(args[1], Integer.getInteger(args[0]));
 		else if(args.length > 0)
 			startClient("", Integer.getInteger(args[0]));
 		else
