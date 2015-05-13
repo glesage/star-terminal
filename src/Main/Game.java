@@ -10,8 +10,10 @@ import java.util.Random;
  */
 public class Game {
     private static final int mapHeight = 14;
+    private static final int MSG_PADDING = 5;
     private static final char OBSTACLE = 'X';
     private static final char WALL = '*';
+    private static final char MSG_CHAR = '#';
 
     Random ran = new Random();
 
@@ -29,7 +31,7 @@ public class Game {
         users.add(user);
 
         List<String> messages = new ArrayList<String>();
-        messages.add(" # WELCOME TO STAR TERMINAL # ");
+        messages.add(this.buildMessage(" WELCOME TO STAR TERMINAL "));
         return this.mapWithMessages(messages);
     }
 
@@ -47,9 +49,7 @@ public class Game {
                 break;
             default:
                 List<String> messages = new ArrayList<String>();
-                messages.add(" ##################### ");
-                messages.add(" # INVALID DIRECTION # ");
-                messages.add(" ##################### ");
+                messages.add(" INVALID DIRECTION ");
                 return this.mapWithMessages(messages);
         }
 
@@ -79,41 +79,28 @@ public class Game {
     }
 
     private String checkForDeath(String originalLine, String newLine) {
-        for (int i = 0; i < this.mapWidth; i++){
-            char original = originalLine.charAt(i);
-            char updated = newLine.charAt(i);
 
-            // Skip if there are no obstacles at this position
-            if (original != OBSTACLE) continue;
-
-            // Skip if there are no users at this new position
-            if (updated == OBSTACLE || updated == ' ') continue;
-
-            // If you got so far then there is a collision
-            List<String> messages = new ArrayList<String>();
-            messages.add(" ################# ");
-            messages.add(" ### GAME OVER ### ");
-
-            for (User user : this.users) {
-                if (user.symbol != updated) continue;
-                String lostMessage = " " + user.name + " lost! ";
-                while (lostMessage.length() < (messages.get(0).length()-2)) {
-                    lostMessage = "#" + lostMessage + "#";
-                }
-                messages.add(" " + lostMessage + " ");
-            }
-            messages.add(" ################# ");
-
-            return this.mapWithMessages(messages);
+        User theDead = null;
+        for (User user : this.users) {
+            if (originalLine.charAt(user.pos) != OBSTACLE) continue;
+            theDead = user;
         }
-        return null;
+
+        if (theDead == null) return null;
+
+        // If you got so far then there is a collision
+        // so build & send out the game over message
+        List<String> messages = new ArrayList<String>();
+        messages.add(this.buildMessage(" GAME OVER! "));
+        messages.add(this.buildMessage(" " + theDead.name + " is dead! "));
+        return this.mapWithMessages(messages);
     }
 
     private String createNextLine() {
         String line = "*";
         while (line.length() < this.mapWidth-1)
         {
-            if (ran.nextDouble() > 0.7) line += OBSTACLE;
+            if (ran.nextDouble() > 0.9) line += OBSTACLE;
             else line += " ";
         }
 
@@ -147,24 +134,54 @@ public class Game {
 
         // Build a new version of the map in memory, with the message lines
         List<String> newMap = new ArrayList<String>(mapHeight);
-        int sizeMinusMessages = (mapHeight/2)-messages.size();
-        while (newMap.size() < sizeMinusMessages) {
-            newMap.add(this.map.get(newMap.size()));
-        }
+        String nextLine = null;
+        int sizeMinusMessages = (mapHeight/2)-(messages.size()/2)-1;
+
+        // Add the first set of lines back into the map
+        while (newMap.size() < sizeMinusMessages) newMap.add(this.map.get(newMap.size()));
+
+        // Add separating line of characters to make messages clearer
+        nextLine = map.get(newMap.size());
+        newMap.add(this.buildMsgLine(nextLine, this.buildMessage("")));
+        //
+
+        // Embed the actual messages into the map
         for (String message : messages) {
-            StringBuilder line = new StringBuilder(map.get(newMap.size()));
-
-            int begin = (line.length()/2)-(message.length()/2);
-            for (int i = 0; i < message.length(); i++) {
-                line.setCharAt(begin+i, message.charAt(i));
-            }
-            newMap.add(line.toString());
-        }
-        while (newMap.size() < mapHeight) {
-            newMap.add(this.map.get(newMap.size()));
+            nextLine = map.get(newMap.size());
+            newMap.add(this.buildMsgLine(nextLine, message));
         }
 
+        // Add separating line of characters to make messages clearer
+        nextLine = map.get(newMap.size());
+        newMap.add(this.buildMsgLine(nextLine, this.buildMessage("")));
+        //
+
+        // Add the last set of lines back into the map
+        while (newMap.size() < mapHeight) newMap.add(this.map.get(newMap.size()));
+
+        // return the map as a string
         return Game.getMapAsString(newMap);
+    }
+
+    // Build a message line using an existing map line using
+    // the original map line's data to blend in nicely
+    private String buildMsgLine(String original, String message) {
+        StringBuilder line = new StringBuilder(original);
+
+        int begin = (line.length()/2)-(message.length()/2);
+        for (int i = 0; i < message.length(); i++) {
+            line.setCharAt(begin+i, message.charAt(i));
+        }
+        return line.toString();
+    }
+
+    // Build a message string using the appropriate size, padding, and decoration
+    private String buildMessage(String message) {
+        while (message.length() < this.mapWidth-MSG_PADDING) {
+            message = MSG_CHAR + message + MSG_CHAR;
+        }
+        message = " " + message + " ";
+        return message;
     }
 
     // Build a string out of the map List
