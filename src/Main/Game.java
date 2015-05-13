@@ -10,8 +10,8 @@ import java.util.Random;
  */
 public class Game {
     private static final int mapHeight = 14;
-    private static final char obstacle = 'X';
-    private static final char wall = '*';
+    private static final char OBSTACLE = 'X';
+    private static final char WALL = '*';
 
     Random ran = new Random();
 
@@ -84,10 +84,10 @@ public class Game {
             char updated = newLine.charAt(i);
 
             // Skip if there are no obstacles at this position
-            if (original != obstacle) continue;
+            if (original != OBSTACLE) continue;
 
             // Skip if there are no users at this new position
-            if (updated == obstacle || updated == ' ') continue;
+            if (updated == OBSTACLE || updated == ' ') continue;
 
             // If you got so far then there is a collision
             List<String> messages = new ArrayList<String>();
@@ -113,11 +113,11 @@ public class Game {
         String line = "*";
         while (line.length() < this.mapWidth-1)
         {
-            if (ran.nextDouble() > 0.7) line += "O";
+            if (ran.nextDouble() > 0.7) line += OBSTACLE;
             else line += " ";
         }
 
-        return line + "*";
+        return line + WALL;
     }
 
     private String createBlankLine() {
