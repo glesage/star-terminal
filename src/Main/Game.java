@@ -25,7 +25,8 @@ public class Game {
         user.pos = (int)(this.mapWidth/2);
         users.add(user);
 
-        String[] messages = {"WELCOME TO STAR TERMINAL"};
+        List<String> messages = new ArrayList<String>();
+        messages.add(" # WELCOME TO STAR TERMINAL # ");
         return this.mapWithMessages(messages);
     }
 
@@ -42,7 +43,11 @@ public class Game {
                 else user.pos++;
                 break;
             default:
-                System.out.println("User sent invalid mvmt: " + mvmt);
+                List<String> messages = new ArrayList<String>();
+                messages.add(" ##################### ");
+                messages.add(" # INVALID DIRECTION # ");
+                messages.add(" ##################### ");
+                return this.mapWithMessages(messages);
         }
 
         return this.rebuildMap();
@@ -76,13 +81,19 @@ public class Game {
             char updated = newLine.charAt(i);
             if (original == 'O' && updated != 'O' && updated != ' ')
             {
-                String[] messages = {};
-                messages[0] = "GAME OVER";
+                List<String> messages = new ArrayList<String>();
+                messages.add(" ################# ");
+                messages.add(" ### GAME OVER ### ");
 
                 for (User user : this.users) {
                     if (user.symbol != updated) continue;
-                    messages[messages.length] = user.name + " lost!";
+                    String lostMessage = " " + user.name + " lost! ";
+                    while (lostMessage.length() < (messages.get(0).length()-2)) {
+                        lostMessage = "#" + lostMessage + "#";
+                    }
+                    messages.add(" " + lostMessage + " ");
                 }
+                messages.add(" ################# ");
 
                 return this.mapWithMessages(messages);
             }
@@ -121,19 +132,19 @@ public class Game {
     }
 
     // Rebuild the map with some custom messages
-    public String mapWithMessages(String[] messages) {
+    public String mapWithMessages(List<String> messages) {
 
         // Make sure the map has the right number of lines
         while (this.map.size() < mapHeight) this.map.add(this.createBlankLine());
 
         // Build a new version of the map in memory, with the message lines
         List<String> newMap = new ArrayList<String>(mapHeight);
-        int sizeMinusMessages = (mapHeight/2)-messages.length;
+        int sizeMinusMessages = (mapHeight/2)-messages.size();
         while (newMap.size() < sizeMinusMessages) {
             newMap.add(this.map.get(newMap.size()));
         }
         for (String message : messages) {
-            StringBuilder line = new StringBuilder(map.get(map.size()/2));
+            StringBuilder line = new StringBuilder(map.get(newMap.size()));
 
             int begin = (line.length()/2)-(message.length()/2);
             for (int i = 0; i < message.length(); i++) {
