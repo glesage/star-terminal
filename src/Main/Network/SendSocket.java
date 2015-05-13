@@ -1,11 +1,15 @@
 package Main.Network;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.net.Socket;
 import java.net.InetAddress;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 public class SendSocket {
     private int port;
@@ -39,12 +43,29 @@ public class SendSocket {
             input = new BufferedReader(new InputStreamReader(client_socket.getInputStream()));
 
             // TODO - get move from keyboard
-            this.communicate("START");
-            this.communicate("LEFT");
-            this.communicate("RIGHT");
-            this.communicate("DOWN");
-            
-            close();
+            List<String> movements = new ArrayList<String>();
+            movements.add("START");
+            movements.add("LEFT");
+            movements.add("LEFT");
+            movements.add("LEFT");
+            movements.add("LEFT");
+            movements.add("LEFT");
+            movements.add("RIGHT");
+            movements.add("RIGHT");
+            movements.add("LEFT");
+            movements.add("LEFT");
+            movements.add("RIGHT");
+            movements.add("LEFT");
+            movements.add("RIGHT");
+            movements.add("RIGHT");
+            movements.add("RIGHT");
+            movements.add("RIGHT");
+            movements.add("RIGHT");
+            movements.add("RIGHT");
+            movements.add("DOWN");
+
+            while (!movements.isEmpty()) this.communicate(movements.remove(0));
+            if (client_socket.isConnected()) close();
         }
         catch(IOException e) {
             System.out.println("Couldn't start client.");
@@ -58,6 +79,7 @@ public class SendSocket {
             // send a message
             output.println(move);
 
+            Boolean dead = false;
             // receive the game map
             String response = null;
             int mapHeight = 10;
@@ -65,13 +87,13 @@ public class SendSocket {
                 response = input.readLine();
                 System.out.println(response);
                 mapHeight--;
-                if (response.toLowerCase().contains("GAME OVER".toLowerCase())) close();
+                if (response.toLowerCase().contains("GAME OVER".toLowerCase())) dead = true;
             }
             System.out.println("\f");
+            if (dead) close();
         }
         catch(IOException e) {
-            System.out.println("Error communicating with server.");
-            e.printStackTrace();
+            System.out.println("Server connection closed.");
             System.exit(1);
         }
     }
