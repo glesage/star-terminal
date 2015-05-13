@@ -1,4 +1,4 @@
-import Main.Network.SendSocket;
+import Main.Network.Network.SendSocket;
 
 public class Client {
 	private static final int PORT = 5555;
