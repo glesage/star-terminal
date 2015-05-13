@@ -58,9 +58,15 @@ public class SendSocket {
             output.println(move);
 
             // receive the game map
-            String response = input.readLine();
-            System.out.println(response);
-            if (response.toLowerCase().contains("GAME OVER".toLowerCase())) close();
+            String response = null;
+            int mapHeight = 10;
+            while (mapHeight > 0) {
+                response = input.readLine();
+                System.out.println(response);
+                mapHeight--;
+                if (response.toLowerCase().contains("GAME OVER".toLowerCase())) close();
+            }
+            System.out.println("\f");
         }
         catch(IOException e) {
             System.out.println("Error communicating with server.");
