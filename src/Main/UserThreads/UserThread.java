@@ -34,10 +34,7 @@ public class UserThread implements Runnable{
                 // If the client is asking to join the game, welcome him in
                 if (clientMsg.equals("START")) {
                     try {
-                        game.joinGame(this.user);
-                        String welcome = " Welcome to Star Terminal ";
-                        while (welcome.length() < game.mapWidth) welcome = "#" + welcome + "#";
-                        welcome = welcome + "\n";
+                        String welcome = game.joinGame(this.user);
                         output.write(welcome.getBytes());
                     } catch (UserAlreadyInGameException e) {
                         System.out.println("Server attempted to add user to game more than once...");
