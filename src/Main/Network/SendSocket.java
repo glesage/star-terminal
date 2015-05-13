@@ -40,8 +40,8 @@ public class SendSocket {
 
             // TODO - get move from keyboard
             this.communicate("START");
-            this.communicate("LEFT");;
-            this.communicate("RIGHT");;
+            this.communicate("LEFT");
+            this.communicate("RIGHT");
             this.communicate("DOWN");
             close();
         }
