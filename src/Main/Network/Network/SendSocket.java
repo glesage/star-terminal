@@ -1,17 +1,21 @@
-package Main.Network;
+package Main.Network.Network;
 
+import Main.Network.Console.Console;
+
+// Network stuff
 import java.net.Socket;
 import java.net.InetAddress;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
+
 
 public class SendSocket {
     private int port;
     private String host;
+
+    private Console console;
 
     String line;
     InetAddress loopback;
@@ -22,6 +26,7 @@ public class SendSocket {
     public SendSocket(String host, int port) {
         this.port = port;
         this.host = host;
+        this.console = new Console();
 
         this.connect();
     }
@@ -40,30 +45,18 @@ public class SendSocket {
             output = new PrintWriter(client_socket.getOutputStream(), true);
             input = new BufferedReader(new InputStreamReader(client_socket.getInputStream()));
 
-            // TODO - get move from keyboard
-            List<String> movements = new ArrayList<String>();
-            movements.add("START");
-            movements.add("LEFT");
-            movements.add("LEFT");
-            movements.add("LEFT");
-            movements.add("LEFT");
-            movements.add("LEFT");
-            movements.add("RIGHT");
-            movements.add("RIGHT");
-            movements.add("LEFT");
-            movements.add("LEFT");
-            movements.add("RIGHT");
-            movements.add("LEFT");
-            movements.add("RIGHT");
-            movements.add("RIGHT");
-            movements.add("RIGHT");
-            movements.add("RIGHT");
-            movements.add("RIGHT");
-            movements.add("RIGHT");
-            movements.add("DOWN");
+            // Join the game
+            this.communicate("START");
 
-            while (!movements.isEmpty()) this.communicate(movements.remove(0));
+            // Get movement from keyboard
+            String movement= null;
+            while (!(movement = this.getNextMovement()).equals("EXIT"))
+            {
+                this.communicate(movement);
+            }
+
             if (client_socket.isConnected()) close();
+            System.exit(1);
         }
         catch(IOException e) {
             System.out.println("Couldn't start client.");
@@ -103,5 +96,19 @@ public class SendSocket {
         catch( Exception e ) {
             System.out.println("Had an error closing the socket.");
         }
+    }
+
+    /**
+     * Movement input manager
+     */
+    private String getNextMovement() {
+        int key = this.console.getLiveASCII();
+
+        if ( key == 0x1B ) return "EXIT"; // pressed 'esc'
+        if ( key == 97 ) return "LEFT"; // pressed 'a'
+        if ( key == 100 ) return "RIGHT"; // presses 'd'
+
+        // If an unkown or invalid key was pressed, wait for a valid one
+        return this.getNextMovement();
     }
 }
