@@ -16,6 +16,7 @@ public class SendSocket {
     private String host;
 
     private Console console;
+    private Boolean dead = false;
 
     String line;
     InetAddress loopback;
@@ -50,12 +51,13 @@ public class SendSocket {
 
             // Get movement from keyboard
             String movement= null;
-            while (!(movement = this.getNextMovement()).equals("EXIT"))
+            while (!dead && !(movement = this.getNextMovement()).equals("EXIT"))
             {
                 this.communicate(movement);
             }
 
             if (client_socket.isConnected()) close();
+            this.console.reset();
             System.exit(1);
         }
         catch(IOException e) {
@@ -70,7 +72,6 @@ public class SendSocket {
             // send a message
             output.println(move);
 
-            Boolean dead = false;
             // receive the game map
             String response = null;
             int mapHeight = 14;
@@ -78,10 +79,10 @@ public class SendSocket {
                 response = input.readLine();
                 System.out.println(response);
                 mapHeight--;
-                if (response.toLowerCase().contains("GAME OVER".toLowerCase())) dead = true;
+                if (response.toLowerCase().contains("GAME OVER".toLowerCase())) this.dead = true;
             }
             System.out.println("\f");
-            if (dead) close();
+            if (this.dead) close();
         }
         catch(IOException e) {
             System.out.println("Server connection closed.");

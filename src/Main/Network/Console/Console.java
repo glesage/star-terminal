@@ -24,10 +24,20 @@ public class Console {
             System.err.println("Keyboard interrupt");
         }
     }
+    public void reset() {
+        try {
+            this.revertConsoleToBackup();
+        } catch(IOException e) {
+            System.err.println("Error while reading console input");
+        }
+        catch (InterruptedException e) {
+            System.err.println("Keyboard interrupt");
+        }
+    }
     public void printLine(String input) {
         // First you gotta set the console into line mode
         try {
-            this.reset();
+            this.revertConsoleToBackup();
         } catch(IOException e) {
             System.err.println("Error while reading console input");
         }
@@ -37,9 +47,6 @@ public class Console {
 
         // Then you can print a line safely
         System.out.println(input);
-    }
-    public void printChar(char input) {
-
     }
     public int getLiveASCII() {
         // First you gotta set the console into char buffered mode
@@ -60,7 +67,7 @@ public class Console {
         }
         return 0;
     }
-    private void reset() throws IOException, InterruptedException {
+    private void revertConsoleToBackup() throws IOException, InterruptedException {
         Console.stty(this.ttyConfig.trim());
     }
     private void setTerminalToCBreak() throws IOException, InterruptedException {
