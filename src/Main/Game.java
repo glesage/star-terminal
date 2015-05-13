@@ -9,7 +9,10 @@ import java.util.Random;
  * Created by jeff on 5/11/15.
  */
 public class Game {
-    private static final int mapHeight = 10;
+    private static final int mapHeight = 14;
+    private static final char obstacle = 'X';
+    private static final char wall = '*';
+
     Random ran = new Random();
 
     private List<User> users = new ArrayList<User>();
@@ -79,24 +82,29 @@ public class Game {
         for (int i = 0; i < this.mapWidth; i++){
             char original = originalLine.charAt(i);
             char updated = newLine.charAt(i);
-            if (original == 'O' && updated != 'O' && updated != ' ')
-            {
-                List<String> messages = new ArrayList<String>();
-                messages.add(" ################# ");
-                messages.add(" ### GAME OVER ### ");
 
-                for (User user : this.users) {
-                    if (user.symbol != updated) continue;
-                    String lostMessage = " " + user.name + " lost! ";
-                    while (lostMessage.length() < (messages.get(0).length()-2)) {
-                        lostMessage = "#" + lostMessage + "#";
-                    }
-                    messages.add(" " + lostMessage + " ");
+            // Skip if there are no obstacles at this position
+            if (original != obstacle) continue;
+
+            // Skip if there are no users at this new position
+            if (updated == obstacle || updated == ' ') continue;
+
+            // If you got so far then there is a collision
+            List<String> messages = new ArrayList<String>();
+            messages.add(" ################# ");
+            messages.add(" ### GAME OVER ### ");
+
+            for (User user : this.users) {
+                if (user.symbol != updated) continue;
+                String lostMessage = " " + user.name + " lost! ";
+                while (lostMessage.length() < (messages.get(0).length()-2)) {
+                    lostMessage = "#" + lostMessage + "#";
                 }
-                messages.add(" ################# ");
-
-                return this.mapWithMessages(messages);
+                messages.add(" " + lostMessage + " ");
             }
+            messages.add(" ################# ");
+
+            return this.mapWithMessages(messages);
         }
         return null;
     }

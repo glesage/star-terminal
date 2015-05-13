@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class ListenSocket {
     private int port;
-    private static final int timeout = 10000; //10 seconds, while developing
+    private static final int timeout = 20000; //20 seconds, while developing
 
     public ListenSocket(int port, Game game){
         this.port = port;
