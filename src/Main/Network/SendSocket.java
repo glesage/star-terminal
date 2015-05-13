@@ -82,7 +82,7 @@ public class SendSocket {
             Boolean dead = false;
             // receive the game map
             String response = null;
-            int mapHeight = 10;
+            int mapHeight = 14;
             while (mapHeight > 0) {
                 response = input.readLine();
                 System.out.println(response);
