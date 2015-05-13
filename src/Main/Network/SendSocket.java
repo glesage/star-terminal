@@ -43,6 +43,7 @@ public class SendSocket {
             this.communicate("LEFT");
             this.communicate("RIGHT");
             this.communicate("DOWN");
+            
             close();
         }
         catch(IOException e) {
