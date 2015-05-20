@@ -66,9 +66,7 @@ public class SendSocket {
                 this.communicate(movement);
             }
 
-            timer.cancel();
             if (client_socket.isConnected()) close();
-            this.console.reset();
             System.exit(1);
         }
         catch(IOException e) {
@@ -104,6 +102,9 @@ public class SendSocket {
     public void close() {
         try {
             client_socket.close();
+            this.console.reset();
+            timer.cancel();
+            System.exit(1);
         }
         catch( Exception e ) {
             System.out.println("Had an error closing the socket.");
