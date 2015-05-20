@@ -4,7 +4,7 @@ import Main.Game;
 
 public class Server {
     public static void main(String[] args) {
-        Game game = new Game(41);
+        Game game = new Game(50);
         startServer(5555, game);
     }
 

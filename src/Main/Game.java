@@ -9,7 +9,7 @@ import java.util.Random;
  * Created by jeff on 5/11/15.
  */
 public class Game {
-    private static final int mapHeight = 14;
+    private static final int mapHeight = 20;
     private static final int MSG_PADDING = 5;
     private static final char OBSTACLE = 'X';
     private static final char WALL = '*';
