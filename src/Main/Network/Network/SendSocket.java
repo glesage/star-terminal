@@ -14,7 +14,7 @@ import java.util.TimerTask;
 
 
 public class SendSocket {
-    private static final int kREFRESH = 400; // Milisecond
+    private static final int kREFRESH = 350; // Milisecond
 
     private int port;
     private String host;
@@ -80,17 +80,17 @@ public class SendSocket {
         try {
             // send a message
             output.println(move);
+            console.clear();
 
             // receive the game map
             String response = null;
-            int mapHeight = 14;
+            int mapHeight = 20;
             while (mapHeight > 0) {
                 response = input.readLine();
                 System.out.println(response);
                 mapHeight--;
                 if (response.toLowerCase().contains("GAME OVER".toLowerCase())) this.dead = true;
             }
-            System.out.println("\f");
             if (this.dead) close();
         }
         catch(IOException e) {
