@@ -92,7 +92,7 @@ public class Game {
         // so build & send out the game over message
         List<String> messages = new ArrayList<String>();
         messages.add(this.buildMessage(" GAME OVER! "));
-        messages.add(this.buildMessage("You are dead..."));
+        messages.add(this.buildMessage(" You are dead.. "));
         return this.mapWithMessages(messages);
     }
 
@@ -195,7 +195,7 @@ public class Game {
 
     public String invalidStartMsg() {
         List<String> messages = new ArrayList<String>();
-        messages.add(this.buildMessage(" GAME  OVER "));
+        messages.add(this.buildMessage(" GAME OVER! "));
         messages.add(this.buildMessage(" INVALID USER "));
         return this.mapWithMessages(messages);
     }
