@@ -24,17 +24,14 @@ public class UserThread implements Runnable{
             BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             OutputStream output = clientSocket.getOutputStream();
 
-            this.user = new User("Geoff", 'G');
-
             String clientMsg = null;
             while ((clientMsg = reader.readLine()) != null) {
 
-                System.out.println(user.name + " sent " + clientMsg);
-
                 // If the client is asking to join the game, welcome him in
-                if (clientMsg.equals("START")) {
+                if (clientMsg.indexOf("START") > -1) {
                     try {
-                        String welcome = game.joinGame(this.user);
+                        String welcome = game.joinGame(clientMsg);
+                        user = game.users.get(game.users.size()-1);
                         output.write(welcome.getBytes());
                     } catch (UserAlreadyInGameException e) {
                         System.out.println("Server attempted to add user to game more than once...");

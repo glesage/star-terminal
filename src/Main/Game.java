@@ -4,6 +4,7 @@ import Main.Exceptions.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import Main.User;
 
 /**
  * Created by jeff on 5/11/15.
@@ -17,7 +18,7 @@ public class Game {
 
     Random ran = new Random();
 
-    private List<User> users = new ArrayList<User>();
+    public List<User> users = new ArrayList<User>();
     public volatile List<String> map = new ArrayList<String>();
     public int mapWidth;
 
@@ -25,10 +26,17 @@ public class Game {
         this.mapWidth = mapWidth;
     }
 
-    public String joinGame(User user) throws UserAlreadyInGameException {
+    public String joinGame(String startMsg) throws UserAlreadyInGameException {
+
+        String[] info = startMsg.split(",");
+        if (info.length < 3) return this.invalidStartMsg();
+
+        User user = new User(info[1], info[2].charAt(0));
         if (users.contains(user)) throw new UserAlreadyInGameException();
         user.pos = (int)(this.mapWidth/2);
         users.add(user);
+
+        System.out.println(user.name + " joined!");
 
         List<String> messages = new ArrayList<String>();
         messages.add(this.buildMessage(" WELCOME TO STAR TERMINAL "));
@@ -51,10 +59,10 @@ public class Game {
                 break;
         }
 
-        return this.rebuildMap();
+        return this.rebuildMap(user);
     }
 
-    private String rebuildMap() {
+    private String rebuildMap(User user) {
 
         // Make sure the map has the right number of lines
         while (this.map.size() < mapHeight) this.map.add(this.createBlankLine());
@@ -67,7 +75,7 @@ public class Game {
         String updatedFirstLine = this.lineWithUpdatedPositions();
 
         // Check for collisions
-        String death = this.checkForDeath(this.map.get(0), updatedFirstLine);
+        String death = this.checkForDeath(user, this.map.get(0), updatedFirstLine);
         if (death != null) return death;
 
         // If no death has been found, update the first line
@@ -76,21 +84,15 @@ public class Game {
         return Game.getMapAsString(this.map);
     }
 
-    private String checkForDeath(String originalLine, String newLine) {
+    private String checkForDeath(User user, String originalLine, String newLine) {
 
-        User theDead = null;
-        for (User user : this.users) {
-            if (originalLine.charAt(user.pos) != OBSTACLE) continue;
-            theDead = user;
-        }
-
-        if (theDead == null) return null;
+        if (originalLine.charAt(user.pos) != OBSTACLE) return null;
 
         // If you got so far then there is a collision
         // so build & send out the game over message
         List<String> messages = new ArrayList<String>();
         messages.add(this.buildMessage(" GAME OVER! "));
-        messages.add(this.buildMessage(" " + theDead.name + " is dead! "));
+        messages.add(this.buildMessage("You are dead..."));
         return this.mapWithMessages(messages);
     }
 
@@ -189,5 +191,12 @@ public class Game {
             outputMap += (line + "\n");
         }
         return outputMap;
+    }
+
+    public String invalidStartMsg() {
+        List<String> messages = new ArrayList<String>();
+        messages.add(this.buildMessage(" GAME  OVER "));
+        messages.add(this.buildMessage(" INVALID USER "));
+        return this.mapWithMessages(messages);
     }
 }
