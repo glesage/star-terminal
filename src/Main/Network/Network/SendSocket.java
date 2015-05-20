@@ -30,15 +30,18 @@ public class SendSocket {
     PrintWriter output;
     BufferedReader input;
 
-    public SendSocket(String host, int port) {
-        this.port = port;
+    private SendSocket(String host, String port) {
+        this.port = Integer.getInteger(port);
         this.host = host;
         this.console = new Console();
-
-        this.connect();
     }
 
-    private void connect() {
+    public SendSocket(String name, String symbol, String host, String port) {
+        this(host, port);
+        this.connect(name, symbol);
+    }
+
+    private void connect(String name, String symbol) {
         try {
             if (host.isEmpty())
                 loopback = InetAddress.getLoopbackAddress();
@@ -80,11 +83,15 @@ public class SendSocket {
         try {
             // send a message
             output.println(move);
-            console.clear();
 
             // receive the game map
             String response = null;
             int mapHeight = 20;
+
+            // Clear the console right before printing out the new one
+            console.clear();
+
+            // Iterate and print the map lines
             while (mapHeight > 0) {
                 response = input.readLine();
                 System.out.println(response);
