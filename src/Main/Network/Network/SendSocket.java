@@ -14,7 +14,7 @@ import java.util.TimerTask;
 
 
 public class SendSocket {
-    private static final int kREFRESH = 200; // Milisecond
+    private static final int kREFRESH = 400; // Milisecond
 
     private int port;
     private String host;
