@@ -110,4 +110,11 @@ public class Console {
         String result = new String(bout.toByteArray());
         return result;
     }
+    public void clear() {
+        int lines = 14;
+        while (lines > 0) {
+            System.out.println("\f");
+            lines--;
+        }
+    }
 }
