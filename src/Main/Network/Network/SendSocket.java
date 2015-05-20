@@ -31,7 +31,7 @@ public class SendSocket {
     BufferedReader input;
 
     private SendSocket(String host, String port) {
-        this.port = Integer.getInteger(port);
+        this.port = Integer.parseInt(port);
         this.host = host;
         this.console = new Console();
     }
