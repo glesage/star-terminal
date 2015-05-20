@@ -9,16 +9,22 @@ import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class SendSocket {
+    private static final int kREFRESH = 200; // Milisecond
+
     private int port;
     private String host;
 
     private Console console;
     private Boolean dead = false;
 
-    String line;
+    private Timer timer;
+    public Boolean communicated = false;
+
     InetAddress loopback;
     Socket client_socket;
     PrintWriter output;
@@ -49,6 +55,10 @@ public class SendSocket {
             // Join the game
             this.communicate("START");
 
+            // Refresh the screen regardless of movements sent
+            timer = new Timer();
+            timer.schedule(new Refresh(this), 0, kREFRESH);
+
             // Get movement from keyboard
             String movement= null;
             while (!dead && !(movement = this.getNextMovement()).equals("EXIT"))
@@ -56,6 +66,7 @@ public class SendSocket {
                 this.communicate(movement);
             }
 
+            timer.cancel();
             if (client_socket.isConnected()) close();
             this.console.reset();
             System.exit(1);
@@ -103,13 +114,31 @@ public class SendSocket {
      * Movement input manager
      */
     private String getNextMovement() {
+        this.communicated = false;
+
         int key = this.console.getLiveASCII();
 
         if ( key == 0x1B ) return "EXIT"; // pressed 'esc'
         if ( key == 97 ) return "LEFT"; // pressed 'a'
         if ( key == 100 ) return "RIGHT"; // presses 'd'
 
-        // If an unkown or invalid key was pressed, wait for a valid one
+        this.communicated = true;
+
+        // If an unknown or invalid key was pressed, wait for a valid one
         return this.getNextMovement();
+    }
+
+    class Refresh extends TimerTask {
+        SendSocket parent = null;
+
+        Refresh (SendSocket parent)
+        {
+            this.parent = parent;
+        }
+
+        public void run() {
+            if (dead || parent.communicated) return;
+            parent.communicate("");
+        }
     }
 }
