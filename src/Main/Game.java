@@ -48,9 +48,7 @@ public class Game {
                 else user.pos++;
                 break;
             default:
-                List<String> messages = new ArrayList<String>();
-                messages.add(" INVALID DIRECTION ");
-                return this.mapWithMessages(messages);
+                break;
         }
 
         return this.rebuildMap();
