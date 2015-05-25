@@ -4,11 +4,7 @@ import Main.Exceptions.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
-import Main.User;
 
-/**
- * Created by jeff on 5/11/15.
- */
 public class Game {
     private static final int mapHeight = 20;
     private static final int MSG_PADDING = 5;
@@ -18,8 +14,8 @@ public class Game {
 
     Random ran = new Random();
 
-    public List<User> users = new ArrayList<User>();
-    public volatile List<String> map = new ArrayList<String>();
+    public List<User> users = new ArrayList<>();
+    public volatile List<String> map = new ArrayList<>();
     public int mapWidth;
 
     public Game(int mapWidth) {
@@ -33,12 +29,12 @@ public class Game {
 
         User user = new User(info[1], info[2].charAt(0));
         if (users.contains(user)) throw new UserAlreadyInGameException();
-        user.pos = (int)(this.mapWidth/2);
+        user.pos = this.mapWidth/2;
         users.add(user);
 
         System.out.println(user.name + " joined!");
 
-        List<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<>();
         messages.add(this.buildMessage(" WELCOME TO STAR TERMINAL "));
         return this.mapWithMessages(messages);
     }
@@ -90,7 +86,7 @@ public class Game {
 
         // If you got so far then there is a collision
         // so build & send out the game over message
-        List<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<>();
         messages.add(this.buildMessage(" GAME OVER! "));
         messages.add(this.buildMessage(" You are dead.. "));
         return this.mapWithMessages(messages);
@@ -133,8 +129,8 @@ public class Game {
         while (this.map.size() < mapHeight) this.map.add(this.createBlankLine());
 
         // Build a new version of the map in memory, with the message lines
-        List<String> newMap = new ArrayList<String>(mapHeight);
-        String nextLine = null;
+        List<String> newMap = new ArrayList<>(mapHeight);
+        String nextLine;
         int sizeMinusMessages = (mapHeight/2)-(messages.size()/2)-1;
 
         // Add the first set of lines back into the map
@@ -194,7 +190,7 @@ public class Game {
     }
 
     public String invalidStartMsg() {
-        List<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<>();
         messages.add(this.buildMessage(" GAME OVER! "));
         messages.add(this.buildMessage(" INVALID USER "));
         return this.mapWithMessages(messages);

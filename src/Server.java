@@ -9,6 +9,6 @@ public class Server {
     }
 
     private static void startServer(int port, Game game) {
-        ListenSocket listen = new ListenSocket(port, game);
+        new ListenSocket(port, game);
     }
 }

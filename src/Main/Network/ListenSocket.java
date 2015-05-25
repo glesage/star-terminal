@@ -8,11 +8,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ListenSocket {
-    private int port;
     private static final int timeout = 10000; //10 seconds, while developing
 
     public ListenSocket(int port, Game game){
-        this.port = port;
         Socket clientSocket;
 
         try {

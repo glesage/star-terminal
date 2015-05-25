@@ -23,12 +23,13 @@ public class UserThread implements Runnable{
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             OutputStream output = clientSocket.getOutputStream();
+            String clientMsg;
 
-            String clientMsg = null;
             while ((clientMsg = reader.readLine()) != null) {
 
                 // If the client is asking to join the game, welcome him in
                 if (clientMsg.contains("START")) {
+                    System.out.println(clientMsg);
                     try {
                         String welcome = game.joinGame(clientMsg);
                         user = game.users.get(game.users.size()-1);
