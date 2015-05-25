@@ -13,15 +13,24 @@ public class ListenSocket {
 
     public ListenSocket(int port, Game game){
         this.port = port;
-        String line;
+        Socket clientSocket;
 
         try {
             System.out.println("Starting server listening at localhost:" + String.valueOf(port));
             ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(timeout);
-            Socket clientSocket = serverSocket.accept();
+            System.out.println("waiting");
 
-            new Thread( new UserThread( clientSocket, game) ).start();
+            //keeps going until interrupted by socket timeout exception
+            while(true){
+                clientSocket = serverSocket.accept();
+
+                new Thread( new UserThread( clientSocket, game) ).start();
+
+                Thread.sleep(500);
+            }
+
+
         }
         catch (java.net.SocketTimeoutException e){
             String timeoutMsg;
@@ -37,6 +46,9 @@ public class ListenSocket {
             System.out.println("Couldn't start server");
             e.printStackTrace();
             System.exit(1);
+        }
+        catch (InterruptedException e){
+            System.out.println("Interrupted by: " + e);
         }
     }
 }

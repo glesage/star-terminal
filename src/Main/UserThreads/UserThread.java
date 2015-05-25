@@ -28,7 +28,7 @@ public class UserThread implements Runnable{
             while ((clientMsg = reader.readLine()) != null) {
 
                 // If the client is asking to join the game, welcome him in
-                if (clientMsg.indexOf("START") > -1) {
+                if (clientMsg.contains("START")) {
                     try {
                         String welcome = game.joinGame(clientMsg);
                         user = game.users.get(game.users.size()-1);
