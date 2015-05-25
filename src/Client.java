@@ -32,6 +32,6 @@ public class Client {
         System.out.print("Symbol for your spaceship: ");
         String symbol = scanner.next();
 
-		SendSocket send = new SendSocket(name, symbol, host, port);
+		new SendSocket(name, symbol, host, port);
 	}
 }

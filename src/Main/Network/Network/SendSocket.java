@@ -56,7 +56,7 @@ public class SendSocket {
             input = new BufferedReader(new InputStreamReader(client_socket.getInputStream()));
 
             // Join the game
-            this.communicate("START,Geoff,W");
+            this.communicate(String.format("START,%s,%s",name,symbol));
 
             // Refresh the screen regardless of movements sent
             timer = new Timer();
