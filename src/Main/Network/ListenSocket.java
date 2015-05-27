@@ -23,8 +23,6 @@ public class ListenSocket {
                 clientSocket = serverSocket.accept();
 
                 new Thread( new UserThread( clientSocket, game) ).start();
-
-                Thread.sleep(500);
             }
 
 
@@ -44,8 +42,8 @@ public class ListenSocket {
             e.printStackTrace();
             System.exit(1);
         }
-        catch (InterruptedException e){
+        /*catch (InterruptedException e){
             System.out.println("Interrupted by: " + e);
-        }
+        }*/
     }
 }
