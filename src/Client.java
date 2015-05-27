@@ -2,8 +2,8 @@ import Main.Network.Network.SendSocket;
 import java.util.Scanner;
 
 public class Client {
-    private static String port = "5555";
-    private static String host = "localhost";
+    private static String port;
+    private static String host;
 
 	public static void main(String[] args) {
 
