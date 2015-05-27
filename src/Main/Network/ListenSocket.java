@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ListenSocket {
-    private static final int timeout = 10000; //10 seconds, while developing
+    private static final int timeout = 2000000; //2000 seconds, while developing
 
     public ListenSocket(int port, Game game){
         Socket clientSocket;
@@ -17,7 +17,6 @@ public class ListenSocket {
             System.out.println("Starting server listening at localhost:" + String.valueOf(port));
             ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(timeout);
-            System.out.println("waiting");
 
             //keeps going until interrupted by socket timeout exception
             while(true){

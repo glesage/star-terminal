@@ -11,6 +11,7 @@ public class Game {
     private static final char OBSTACLE = 'X';
     private static final char WALL = '*';
     private static final char MSG_CHAR = '#';
+    private static volatile long lastUpdate = System.currentTimeMillis();
 
     Random ran = new Random();
 
@@ -55,7 +56,14 @@ public class Game {
                 break;
         }
 
-        return this.rebuildMap(user);
+        //assures uniform map updating time
+        if(System.currentTimeMillis() - lastUpdate > 250){
+            lastUpdate = System.currentTimeMillis();
+            return this.rebuildMap(user);
+        }else{
+            return Game.getMapAsString(this.map);
+        }
+
     }
 
     private String rebuildMap(User user) {
@@ -96,7 +104,7 @@ public class Game {
         String line = "*";
         while (line.length() < this.mapWidth-1)
         {
-            if (ran.nextDouble() > 0.9) line += OBSTACLE;
+            if (ran.nextDouble() > 0.95) line += OBSTACLE;
             else line += " ";
         }
 

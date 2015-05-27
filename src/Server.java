@@ -3,8 +3,10 @@ import Main.Network.ListenSocket;
 import Main.Game;
 
 public class Server {
+    static volatile Game game;
+
     public static void main(String[] args) {
-        Game game = new Game(50);
+        game = new Game(50);
         startServer(5555, game);
     }
 
