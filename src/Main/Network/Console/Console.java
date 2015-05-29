@@ -14,56 +14,79 @@ import java.io.InputStream;
 public class Console {
     private String ttyConfig;
 
+    private boolean isUnix = false;
+
     public Console() {
+        String osName = System.getProperty("os.name");
+        String osNameMatch = osName.toLowerCase();
+        if(osNameMatch.contains("linux")) {
+            isUnix = true;
+        } else if(osNameMatch.contains("solaris") || osNameMatch.contains("sunos")) {
+            isUnix = true;
+        } else if(osNameMatch.contains("mac os") || osNameMatch.contains("macos") || osNameMatch.contains("darwin")) {
+            isUnix = true;
+        } else if(osNameMatch.contains("windows")) {
+            System.err.println("Are you ACTUALLY trying this on windows!? It won't play nice...");
+        } else {
+            System.err.println("Your OS is unknown to us... who ARE you???");
+        }
+
+        if (!isUnix) return;
+
         try {
             this.ttyConfig = Console.stty("-g");
         } catch (IOException e) {
-            System.err.println("Error while reading console input");
+            System.err.println("new(): Error while reading console input");
         }
         catch (InterruptedException e) {
-            System.err.println("Keyboard interrupt");
+            System.err.println("new(): Keyboard interrupt");
         }
     }
     public void reset() {
+        if (!isUnix) return;
+
         try {
             this.revertConsoleToBackup();
         } catch(IOException e) {
-            System.err.println("Error while reading console input");
+            System.err.println("reset(): Error while reading console input");
         }
         catch (InterruptedException e) {
-            System.err.println("Keyboard interrupt");
+            System.err.println("reset(): Keyboard interrupt");
         }
     }
     public void printLine(String input) {
-        // First you gotta set the console into line mode
-        try {
-            this.revertConsoleToBackup();
-        } catch(IOException e) {
-            System.err.println("Error while reading console input");
-        }
-        catch (InterruptedException e) {
-            System.err.println("Keyboard interrupt");
+        if (isUnix) {
+            // First you gotta set the console into line mode
+            try {
+                this.revertConsoleToBackup();
+            } catch(IOException e) {
+                System.err.println("printLine(): Error while reading console input");
+            }
+            catch (InterruptedException e) {
+                System.err.println("printLine(): Keyboard interrupt");
+            }
         }
 
         // Then you can print a line safely
         System.out.println(input);
     }
     public int getLiveASCII() {
-        // First you gotta set the console into char buffered mode
-        try {
-            this.setTerminalToCBreak();
-        } catch(IOException e) {
-            System.err.println("Error while reading console input");
-        }
-        catch (InterruptedException e) {
-            System.err.println("Keyboard interrupt");
+        if (isUnix) {
+            // First you gotta set the console into char buffered mode
+            try {
+                this.setTerminalToCBreak();
+            } catch (IOException e) {
+                System.err.println("getLiveASCII(): Error while reading console input");
+            } catch (InterruptedException e) {
+                System.err.println("getLiveASCII(): Keyboard interrupt");
+            }
         }
 
         // Then you can wait for console input
         try {
            return System.in.read();
         } catch(IOException e) {
-            System.err.println("Error while reading console input");
+            System.err.println("getLiveASCII(): Error while reading console input");
         }
         return 0;
     }
