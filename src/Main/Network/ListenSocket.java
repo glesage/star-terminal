@@ -1,6 +1,7 @@
 package Main.Network;
 
 import Main.Game;
+import Main.ServerCommandWatcher;
 import Main.UserThreads.UserThread;
 
 import java.io.IOException;
@@ -13,11 +14,14 @@ public class ListenSocket {
     public ListenSocket(int port, Game game){
         Socket clientSocket;
 
+        //watch for input to stop server
+        new Thread(new ServerCommandWatcher()).start();
+
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(timeout);
 
-            //keeps going until interrupted by socket timeout exception
+            //keeps going until interrupted by socket timeout exception or server shutting down
             while(true){
                 clientSocket = serverSocket.accept();
 
